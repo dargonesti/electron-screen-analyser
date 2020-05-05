@@ -1,4 +1,5 @@
 const  {contextToHistogram} = require("./graphs/histogram.js");
+const  {contextToVectorscope} = require("./graphs/vectorscope.js");
 const { desktopCapturer, remote } = require('electron');
 
 const { writeFile } = require('fs');
@@ -15,6 +16,11 @@ const videoElement = document.querySelector('video');
 
 const canvasElement = document.querySelector('canvas#c');
 var histoElement = document.querySelector("#histo");
+var vectorElement = document.querySelector("#vectorscope");
+
+let videoCtx = canvasElement.getContext('2d');
+let histoCtx = histoElement.getContext('2d');
+let vectorCtx = vectorElement.getContext('2d');
 
 const startBtn = document.getElementById('startBtn');
 startBtn.onclick = e => {
@@ -124,24 +130,23 @@ async function handleStop(e) {
 
 }
 
-setInterval(takeSnapshot, 16);
+setInterval(takeSnapshot, 3000);
 function takeSnapshot() {
-  var img = document.querySelector('img') || document.createElement('img');
-  var context;
+  var img = document.querySelector('img') || document.createElement('img'); 
   var width = videoElement.offsetWidth
     , height = videoElement.offsetHeight;
 
   canvasElement.width = width;
   canvasElement.height = height;
 
-  context = canvasElement.getContext('2d');
-  context.drawImage(videoElement, 0, 0, width, height);
-
+  videoCtx.drawImage(videoElement, 0, 0, width, height);
   
-  let imgData = context.getImageData(0, 0, width, height).data; //[rgbargbargba...]
+  let imgData = videoCtx.getImageData(0, 0, width, height).data; //[rgbargbargba...]
 
-  let newHistogram = contextToHistogram(imgData, histoElement)
+  contextToHistogram(imgData, histoElement, histoCtx)
+  contextToVectorscope(imgData, vectorElement, vectorCtx)
 
+  delete imgData;
   
   //img.src = canvasElement.toDataURL('image/png');
   //document.body.appendChild(img);
