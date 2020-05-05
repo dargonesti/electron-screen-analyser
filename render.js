@@ -1,9 +1,11 @@
-const { contextToHistogram } = require("./graphs/histogram.js");
+/*const { contextToHistogram } = require("./graphs/histogram.js");
 const { contextToVectorscope } = require("./graphs/vectorscope.js");
 const { desktopCapturer, remote } = require('electron');
 
-const { writeFile } = require('fs');
-
+const { writeFile } = require('fs');*/
+import { contextToHistogram } from "./graphs/histogram.js";
+import { contextToVectorscope } from "./graphs/vectorscope.js";
+import { desktopCapturer, remote } from 'electron';
 
 const { dialog, Menu } = remote;
 
