@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Hello World!</title>
+    <title>Vectorscopes Everywhere!!!</title>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css"
@@ -11,11 +11,12 @@
     <script defer src="render.js"></script>
   </head>
   <body class="content">
-    <h1>⚡ Electron Screen Recorder</h1>
+    <h1>⚡ Vectorscopes and Histograms!</h1>
 
     <video></video>
+    <canvas id="c" style="display:none;" width="1920" height="1080"></canvas>
 
-    <button id="startBtn" class="button is-primary">Start</button>
+    <button id="startBtn" class="button is-primary">Take Image</button>
     <button id="stopBtn" class="button is-warning">Stop</button>
 
     <hr />
@@ -23,5 +24,7 @@
     <button id="videoSelectBtn" class="button is-text">
       Choose a Video Source
     </button>
+    
+    <canvas id="histo" style="border: 1px solid black;" width="500" height="200"></canvas>
   </body>
 </html>

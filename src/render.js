@@ -1,6 +1,8 @@
+const  {contextToHistogram} = require("./graphs/histogram.js");
 const { desktopCapturer, remote } = require('electron');
 
 const { writeFile } = require('fs');
+
 
 const { dialog, Menu } = remote;
 
@@ -11,23 +13,33 @@ const recordedChunks = [];
 // Buttons
 const videoElement = document.querySelector('video');
 
+const canvasElement = document.querySelector('canvas#c');
+var histoElement = document.querySelector("#histo");
+
 const startBtn = document.getElementById('startBtn');
 startBtn.onclick = e => {
-  mediaRecorder.start();
+  /*mediaRecorder.start();
   startBtn.classList.add('is-danger');
-  startBtn.innerText = 'Recording';
+  startBtn.innerText = 'Recording';*/
+  takeSnapshot();
 };
 
 const stopBtn = document.getElementById('stopBtn');
 
 stopBtn.onclick = e => {
-  mediaRecorder.stop();
+  /*mediaRecorder.stop();
   startBtn.classList.remove('is-danger');
-  startBtn.innerText = 'Start';
+  startBtn.innerText = 'Start';*/
 };
 
 const videoSelectBtn = document.getElementById('videoSelectBtn');
 videoSelectBtn.onclick = getVideoSources;
+
+const inputSources = desktopCapturer.getSources({
+  types: ['window', 'screen']
+})
+  .then(sources =>
+    selectSource(sources[0]));
 
 // Get the available video sources
 async function getVideoSources() {
@@ -66,6 +78,10 @@ async function selectSource(source) {
   // Create a Stream
   const stream = await navigator.mediaDevices
     .getUserMedia(constraints);
+  //console.log(stream);
+  stream.onaddtrack = (track) => {
+   // console.log(track);
+  }
 
   // Preview the source in a video element
   videoElement.srcObject = stream;
@@ -73,6 +89,7 @@ async function selectSource(source) {
 
   // Create the Media Recorder
   const options = { mimeType: 'video/webm; codecs=vp9' };
+
   mediaRecorder = new MediaRecorder(stream, options);
 
   // Register Event Handlers
@@ -105,4 +122,27 @@ async function handleStop(e) {
     writeFile(filePath, buffer, () => console.log('video saved successfully!'));
   }
 
+}
+
+setInterval(takeSnapshot, 16);
+function takeSnapshot() {
+  var img = document.querySelector('img') || document.createElement('img');
+  var context;
+  var width = videoElement.offsetWidth
+    , height = videoElement.offsetHeight;
+
+  canvasElement.width = width;
+  canvasElement.height = height;
+
+  context = canvasElement.getContext('2d');
+  context.drawImage(videoElement, 0, 0, width, height);
+
+  
+  let imgData = context.getImageData(0, 0, width, height).data; //[rgbargbargba...]
+
+  let newHistogram = contextToHistogram(imgData, histoElement)
+
+  
+  //img.src = canvasElement.toDataURL('image/png');
+  //document.body.appendChild(img);
 }
