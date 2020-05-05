@@ -106,7 +106,7 @@ var rgb2hsv = function (red, green, blue) {
   };
 
 
-function contextToVectorscope(sourceData, dest, destCtx) {
+function contextToVectorscope(sourceData, dest, destCtx, precision) {
     let start = Date.now()
     let options = {
         alias: true,
@@ -127,7 +127,7 @@ function contextToVectorscope(sourceData, dest, destCtx) {
     const centerX = dest.width / 2;
     const centerY = dest.height / 2;
     const minCenter = Math.min(centerX, centerY); // TODO : - margin
-    for(var i = 0; i< sourceData.length; i += 4){
+    for(var i = 0; i< sourceData.length; i += 4 * Math.floor(100/precision)){
       //  if(i > 32100) continue;
 
         let hsl = rgb2hsv(sourceData[i], sourceData[i+1], sourceData[i+2]);
@@ -147,7 +147,7 @@ function contextToVectorscope(sourceData, dest, destCtx) {
         destCtx.fillRect(x,y,1,1);
     }
 
-    console.log("Done in : ", (Date.now()-start) / 1000 , "s")
+    console.log("Done in : ", (Date.now()-start) / 1000 , "s on p:", precision)
     /*
         if (plotFill.checked && chans.length > 1) {
           histCtx.globalCompositeOperation = 'source-over';

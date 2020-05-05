@@ -13,7 +13,6 @@
   <body class="content">
     <h1>⚡ Vectorscopes and Histograms!</h1>
 
-    <video ></video>
     <canvas id="c" style="display:none;" width="1920" height="1080"></canvas>
 
     <button id="startBtn" class="button is-primary">Take Image</button>
@@ -23,10 +22,29 @@
       Choose a Video Source
     </button>
 
+    <select id="precision" >
+      <option value="100">100</option>
+      <option value="90">90</option>
+      <option value="80">80</option>
+      <option value="70">70</option>
+      <option value="60">60</option>
+      <option value="50">50</option>
+      <option value="40">40</option>
+      <option value="30">30</option>
+      <option selected value="20">20</option>
+      <option value="10">10</option>
+      <option value="5">5</option>
+      <option value="2">2</option>
+      <option value="1">1</option>
+    </select>
+
     <hr />
     
     <canvas id="histo" style="border: 1px solid black;" width="500" height="200"></canvas>
     
     <canvas id="vectorscope" style="border: 1px solid black;" width="300" height="300"></canvas>
+
+    
+    <video ></video>
   </body>
 </html>

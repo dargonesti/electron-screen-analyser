@@ -1,5 +1,5 @@
-const  {contextToHistogram} = require("./graphs/histogram.js");
-const  {contextToVectorscope} = require("./graphs/vectorscope.js");
+const { contextToHistogram } = require("./graphs/histogram.js");
+const { contextToVectorscope } = require("./graphs/vectorscope.js");
 const { desktopCapturer, remote } = require('electron');
 
 const { writeFile } = require('fs');
@@ -23,19 +23,19 @@ let histoCtx = histoElement.getContext('2d');
 let vectorCtx = vectorElement.getContext('2d');
 
 const startBtn = document.getElementById('startBtn');
+let animationId = -1;
+
 startBtn.onclick = e => {
-  /*mediaRecorder.start();
-  startBtn.classList.add('is-danger');
-  startBtn.innerText = 'Recording';*/
-  takeSnapshot();
+  if (animationId < 0)
+    animationId = setInterval(takeSnapshot, 1);
 };
 
+const precision = document.getElementById('precision');
 const stopBtn = document.getElementById('stopBtn');
 
 stopBtn.onclick = e => {
-  /*mediaRecorder.stop();
-  startBtn.classList.remove('is-danger');
-  startBtn.innerText = 'Start';*/
+  clearInterval(animationId);
+  animationId = -1;
 };
 
 const videoSelectBtn = document.getElementById('videoSelectBtn');
@@ -86,7 +86,7 @@ async function selectSource(source) {
     .getUserMedia(constraints);
   //console.log(stream);
   stream.onaddtrack = (track) => {
-   // console.log(track);
+    // console.log(track);
   }
 
   // Preview the source in a video element
@@ -130,9 +130,9 @@ async function handleStop(e) {
 
 }
 
-setInterval(takeSnapshot, 3000);
+animationId = setInterval(takeSnapshot, 1);
 function takeSnapshot() {
-  var img = document.querySelector('img') || document.createElement('img'); 
+  var img = document.querySelector('img') || document.createElement('img');
   var width = videoElement.offsetWidth
     , height = videoElement.offsetHeight;
 
@@ -140,14 +140,14 @@ function takeSnapshot() {
   canvasElement.height = height;
 
   videoCtx.drawImage(videoElement, 0, 0, width, height);
-  
+
   let imgData = videoCtx.getImageData(0, 0, width, height).data; //[rgbargbargba...]
 
-  contextToHistogram(imgData, histoElement, histoCtx)
-  contextToVectorscope(imgData, vectorElement, vectorCtx)
+  contextToHistogram(imgData, histoElement, histoCtx, parseInt(precision.value))
+  contextToVectorscope(imgData, vectorElement, vectorCtx, parseInt(precision.value))
 
   delete imgData;
-  
+
   //img.src = canvasElement.toDataURL('image/png');
   //document.body.appendChild(img);
 }
